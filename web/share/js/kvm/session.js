@@ -32,7 +32,7 @@ import {Atx} from "./atx.js";
 import {Msd} from "./msd.js";
 import {Streamer} from "./stream.js";
 import {Gpio} from "./gpio.js";
-import {Ocr} from "./ocr.js";
+//import {Ocr} from "./ocr.js";
 
 
 export function Session() {
@@ -51,7 +51,7 @@ export function Session() {
 	var __atx = new Atx(__recorder);
 	var __msd = new Msd();
 	var __gpio = new Gpio(__recorder);
-	var __ocr = new Ocr(__streamer.getGeometry);
+	//var __ocr = new Ocr(__streamer.getGeometry);
 
 	var __info_hw_state = null;
 	var __info_fan_state = null;
@@ -366,7 +366,7 @@ export function Session() {
 			case "atx_state": __atx.setState(data.event); break;
 			case "msd_state": __msd.setState(data.event); break;
 			case "streamer_state": __streamer.setState(data.event); break;
-			case "streamer_ocr_state": __ocr.setState(data.event); break;
+			//case "streamer_ocr_state": __ocr.setState(data.event); break;
 		}
 	};
 
@@ -389,7 +389,7 @@ export function Session() {
 			__ping_timer = null;
 		}
 
-		__ocr.setState(null);
+		//__ocr.setState(null);
 		__gpio.setState(null);
 		__hid.setSocket(null);
 		__recorder.setSocket(null);

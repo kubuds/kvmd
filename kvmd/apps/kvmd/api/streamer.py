@@ -59,6 +59,7 @@ class StreamerApi:
             allow_offline=valid_bool(request.query.get("allow_offline", False)),
         )
         if snapshot:
+            """
             if valid_bool(request.query.get("ocr", False)):
                 langs = self.__ocr.get_available_langs()
                 return Response(
@@ -78,6 +79,8 @@ class StreamerApi:
                     content_type="text/plain",
                 )
             elif valid_bool(request.query.get("preview", False)):
+            """
+            if valid_bool(request.query.get("preview", False)):
                 data = await snapshot.make_preview(
                     max_width=valid_int_f0(request.query.get("preview_max_width", 0)),
                     max_height=valid_int_f0(request.query.get("preview_max_height", 0)),
@@ -100,7 +103,8 @@ class StreamerApi:
     # =====
 
     async def get_ocr(self) -> dict:  # XXX: Ugly hack
-        enabled = self.__ocr.is_available()
+        #enabled = self.__ocr.is_available()
+        enabled = False
         default: list[str] = []
         available: list[str] = []
         if enabled:
@@ -116,6 +120,8 @@ class StreamerApi:
             },
         }
 
+    """
     @exposed_http("GET", "/streamer/ocr")
     async def __ocr_handler(self, _: Request) -> Response:
         return make_json_response(await self.get_ocr())
+    """
