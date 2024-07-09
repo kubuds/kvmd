@@ -43,7 +43,7 @@ def _load_libc() -> ctypes.CDLL:
         ("inotify_init", c_int, []),
         ("inotify_add_watch", c_int, [c_int, c_char_p, c_uint32]),
         ("inotify_rm_watch", c_int, [c_int, c_uint32]),
-        ("renameat2", c_int, [c_int, c_char_p, c_int, c_char_p, c_uint]),
+        ("renameat", c_int, [c_int, c_char_p, c_int, c_char_p]),
         ("free", c_int, [c_void_p]),
     ]:
         func = getattr(lib, name)
@@ -63,5 +63,5 @@ get_errno = ctypes.get_errno
 inotify_init = _libc.inotify_init
 inotify_add_watch = _libc.inotify_add_watch
 inotify_rm_watch = _libc.inotify_rm_watch
-renameat2 = _libc.renameat2
+renameat = _libc.renameat
 free = _libc.free
