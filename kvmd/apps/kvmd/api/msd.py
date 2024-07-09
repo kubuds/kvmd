@@ -26,7 +26,7 @@ import time
 from typing import AsyncGenerator
 
 import aiohttp
-import zstandard
+#import zstandard
 
 from aiohttp.web import Request
 from aiohttp.web import Response
@@ -93,7 +93,7 @@ class MsdApi:
             "": ("", None),
             "none": ("", None),
             "lzma": (".xz", (lambda: lzma.LZMACompressor())),  # pylint: disable=unnecessary-lambda
-            "zstd": (".zst", (lambda: zstandard.ZstdCompressor().compressobj())),  # pylint: disable=unnecessary-lambda
+            #"zstd": (".zst", (lambda: zstandard.ZstdCompressor().compressobj())),  # pylint: disable=unnecessary-lambda
         }
         (suffix, make_compressor) = compressors[check_string_in_list(
             arg=request.query.get("compress", ""),
