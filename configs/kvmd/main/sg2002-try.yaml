@@ -1,0 +1,61 @@
+override: !include [override.d, override.yaml]
+
+logging: !include logging.yaml
+
+kvmd:
+    auth: !include auth.yaml
+
+    server:
+        unix_mode: 0666
+
+    atx:
+        type: gpio
+        device: /dev/gpiochip0
+
+    hid:
+        type: otg
+        keyboard:
+            device: /dev/null
+        mouse:
+            device: /dev/null
+        noop: true
+
+    msd:
+        type: otg
+        remount_cmd: /bin/true
+
+    streamer:
+        desired_fps: 30
+        max_fps: 40
+        cmd:
+            - "/usr/bin/ustreamer"
+            - "--device=/dev/video0"
+            - "--quality={quality}"
+            - "--resolution=1920x1080"
+            - "--host=127.0.0.1"
+            - "--port={http_port}"
+            - "--exit-on-parent-death"
+            - "--process-name-prefix={process_name_prefix}"
+            - "--notify-parent"
+            - "--no-log-colors"
+
+    gpio:
+        drivers:
+            __gpio__:
+                device: /dev/gpiochip0
+
+pst:
+    remount_cmd: /bin/true
+
+otgnet:
+    commands:
+        post_start_cmd:
+            - "/bin/true"
+        pre_stop_cmd:
+            - "/bin/true"
+
+nginx:
+    http:
+        port: 8080
+    https:
+        port: 4430
