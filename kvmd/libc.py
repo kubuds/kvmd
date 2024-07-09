@@ -34,11 +34,7 @@ from ctypes import c_void_p
 
 # =====
 def _load_libc() -> ctypes.CDLL:
-    path = ctypes.util.find_library("c")
-    if not path:
-        raise RuntimeError("Where is libc?")
-    assert path
-    lib = ctypes.CDLL(path)
+    lib = ctypes.CDLL("/usr/lib64/libc.so")
     for (name, restype, argtypes) in [
         ("inotify_init", c_int, []),
         ("inotify_add_watch", c_int, [c_int, c_char_p, c_uint32]),

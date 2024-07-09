@@ -31,11 +31,7 @@ from .mappings import WebModifiers
 
 # =====
 def _load_libxkbcommon() -> ctypes.CDLL:
-    path = ctypes.util.find_library("xkbcommon")
-    if not path:
-        raise RuntimeError("Where is libxkbcommon?")
-    assert path
-    lib = ctypes.CDLL(path)
+    lib = ctypes.CDLL("/usr/lib64/libxkbcommon.so")
     for (name, restype, argtypes) in [
         ("xkb_utf32_to_keysym", ctypes.c_uint32, [ctypes.c_uint32]),
     ]:
