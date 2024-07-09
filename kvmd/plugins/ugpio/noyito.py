@@ -62,7 +62,7 @@ class Plugin(BaseUserGpioDriver):
 
         self.__device_path = device_path
 
-        self.__device: (hid.device | None) = None  # type: ignore
+        self.__device: (hid.Device | None) = None  # type: ignore
         self.__stop = False
 
         self.__initials: dict[int, bool] = {}
@@ -134,10 +134,10 @@ class Plugin(BaseUserGpioDriver):
             self.__state[pin] = state
 
     @contextlib.contextmanager
-    def __ensure_device(self, context: str) -> hid.device:  # type: ignore
+    def __ensure_device(self, context: str) -> hid.Device:  # type: ignore
         assert not self.__stop
         if self.__device is None:
-            device = hid.device()  # type: ignore
+            device = hid.Device()  # type: ignore
             device.open_path(self.__device_path.encode("utf-8"))
             device.set_nonblocking(True)
             self.__device = device
