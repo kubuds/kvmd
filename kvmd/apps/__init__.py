@@ -607,7 +607,7 @@ def _get_config_scheme() -> dict:
         "otgnet": {
             "iface": {
                 "net":    Option("172.30.30.0/24", type=functools.partial(valid_net, v6=False)),
-                "ip_cmd": Option(["/usr/bin/ip"],  type=valid_command),
+                "ip_cmd": Option(["/usr/sbin/ip"],  type=valid_command),
             },
 
             "firewall": {
@@ -624,11 +624,9 @@ def _get_config_scheme() -> dict:
                 "pre_start_cmd_append": Option([], type=valid_options),
 
                 "post_start_cmd": Option([
-                    "/usr/bin/systemd-run",
-                    "--unit=kvmd-otgnet-dnsmasq",
                     "/usr/sbin/dnsmasq",
                     "--conf-file=/dev/null",
-                    "--pid-file",
+                    "--pid-file=/run/kvmd/dnsmasq.pid",
                     "--user=dnsmasq",
                     "--interface={iface}",
                     "--port=0",
@@ -636,15 +634,14 @@ def _get_config_scheme() -> dict:
                     "--dhcp-leasefile=/run/kvmd/dnsmasq.lease",
                     "--dhcp-option={dhcp_option_3}",
                     "--dhcp-option=6",
-                    "--keep-in-foreground",
                 ], type=valid_command),
                 "post_start_cmd_remove": Option([], type=valid_options),
                 "post_start_cmd_append": Option([], type=valid_options),
 
                 "pre_stop_cmd": Option([
-                    "/usr/bin/systemctl",
-                    "stop",
-                    "kvmd-otgnet-dnsmasq",
+                    "/usr/bin/bash",
+                    "-c",
+                    "kill -SIGINT $(< /run/kvmd/dnsmasq.pid)",
                 ], type=valid_command),
                 "pre_stop_cmd_remove": Option([], type=valid_options),
                 "pre_stop_cmd_append": Option([], type=valid_options),
