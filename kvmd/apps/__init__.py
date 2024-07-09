@@ -710,7 +710,7 @@ def _get_config_scheme() -> dict:
             },
 
             "streamer": {
-                "unix":    Option("/run/kvmd/ustreamer.sock", type=valid_abs_path, unpack_as="unix_path"),
+                "port":    Option(8811, type=valid_int_f1, unpack_as="http_port"),
                 "timeout": Option(5.0, type=valid_float_f01),
             },
 

@@ -29,6 +29,7 @@ from typing import Generator
 from typing import AsyncGenerator
 
 import aiohttp
+import socket
 import ustreamer
 
 from .. import tools
@@ -82,13 +83,13 @@ class HttpStreamerClient(BaseStreamerClient):
     def __init__(
         self,
         name: str,
-        unix_path: str,
+        http_port: int,
         timeout: float,
         user_agent: str,
     ) -> None:
 
         self.__name = name
-        self.__unix_path = unix_path
+        self.__http_port = http_port
         self.__timeout = timeout
         self.__user_agent = user_agent
 
@@ -131,7 +132,7 @@ class HttpStreamerClient(BaseStreamerClient):
     def __make_http_session(self) -> aiohttp.ClientSession:
         kwargs: dict = {
             "headers": {"User-Agent": self.__user_agent},
-            "connector": aiohttp.UnixConnector(path=self.__unix_path),
+            "connector": aiohttp.TCPConnector(ssl=False,family=socket.AF_INET),
             "timeout": aiohttp.ClientTimeout(
                 connect=self.__timeout,
                 sock_read=self.__timeout,
@@ -141,7 +142,7 @@ class HttpStreamerClient(BaseStreamerClient):
 
     def __make_url(self, handle: str) -> str:
         assert not handle.startswith("/"), handle
-        return f"http://localhost:0/{handle}"
+        return f"http://localhost:{self.__http_port}/{handle}"
 
     def __patch_stream_reader(self, reader: aiohttp.StreamReader) -> None:
         # https://github.com/pikvm/pikvm/issues/92

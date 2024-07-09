@@ -31,6 +31,7 @@ from typing import AsyncGenerator
 from typing import Any
 
 import aiohttp
+import socket
 
 from PIL import Image as PilImage
 
@@ -177,7 +178,7 @@ class Streamer:  # pylint: disable=too-many-instance-attributes
         shutdown_delay: float,
         state_poll: float,
 
-        unix_path: str,
+        http_port: str,
         timeout: float,
         snapshot_timeout: float,
 
@@ -202,7 +203,7 @@ class Streamer:  # pylint: disable=too-many-instance-attributes
         self.__shutdown_delay = shutdown_delay
         self.__state_poll = state_poll
 
-        self.__unix_path = unix_path
+        self.__http_port = http_port
         self.__timeout = timeout
         self.__snapshot_timeout = snapshot_timeout
 
@@ -410,7 +411,7 @@ class Streamer:  # pylint: disable=too-many-instance-attributes
         if not self.__http_session:
             kwargs: dict = {
                 "headers": {"User-Agent": htclient.make_user_agent("KVMD")},
-                "connector": aiohttp.UnixConnector(path=self.__unix_path),
+                "connector": aiohttp.TCPConnector(ssl=False,family=socket.AF_INET),
                 "timeout": aiohttp.ClientTimeout(total=self.__timeout),
             }
             self.__http_session = aiohttp.ClientSession(**kwargs)
@@ -418,7 +419,7 @@ class Streamer:  # pylint: disable=too-many-instance-attributes
 
     def __make_url(self, handle: str) -> str:
         assert not handle.startswith("/"), handle
-        return f"http://localhost:0/{handle}"
+        return f"http://127.0.0.1:{self.__http_port}/{handle}"
 
     # =====
 
@@ -460,7 +461,6 @@ class Streamer:  # pylint: disable=too-many-instance-attributes
     def __make_cmd(self, cmd: list[str]) -> list[str]:
         return [
             part.format(
-                unix=self.__unix_path,
                 process_name_prefix=self.__process_name_prefix,
                 **self.__params.get_params(),
             )
